@@ -151,6 +151,15 @@ jobs:
         run: |
          cd kernel_workspace/kernel_platform
          sed -i 's/res="\$res\$(cat "\$file")"/res="${{ github.event.inputs.KERNEL_NAME }}"/g' ./common/scripts/setlocalversion
+
+
+      - name: Add sched_ext
+        run: |
+         cd kernel_workspace/kernel_platform/common/drivers
+         git clone https://github.com/JiuGeFaCai/sched_ext.git
+         rm -rf ./sched_ext/.git
+         printf "\nobj-y                              += sched_ext/\n" >> Makefile
+         
            
       - name: Build kernel
         run: |
@@ -168,11 +177,7 @@ jobs:
          
       - name: Make AnyKernel3
         run: |
-         if [ "${{ github.event.inputs.FEIL }}" = "oneplus_ace5_pro" ]; then
-          git clone -b a5p https://github.com/JiuGeFaCai/AnyKernel3.git --depth=1
-         else
-          git clone https://github.com/JiuGeFaCai/AnyKernel3.git --depth=1
-         fi
+         git clone https://github.com/JiuGeFaCai/AnyKernel3.git --depth=1      
          rm -rf ./AnyKernel3/.git
          rm -rf ./AnyKernel3/push.sh
          cp kernel_workspace/kernel_platform/dist/Image ./AnyKernel3/
